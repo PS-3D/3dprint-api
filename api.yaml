@@ -1,0 +1,333 @@
+openapi: 3.0.3
+info:
+  title: 3dprinter API
+  description: |-
+    3D Printer stuff
+  contact:
+    email: mfischer@ps-3d.de
+  license:
+    name: GPLv3
+    url: https://www.gnu.org/licenses/gpl-3.0.en.html
+  version: 1.0.0
+tags:
+  - name: gcode
+    description: Everything gcode
+  - name: axis
+    description: Everything concerning position and movement of the different axis
+  - name: heating
+    description: Control the different heating elements
+  - name: estop
+    description: Stop the motor in a not-so-emergency
+paths:
+  /gcode:
+    get:
+      tags:
+        - gcode
+      summary: Information about the gcode
+      description: Get information about the gcode file that is currently set
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GCode'
+  /gcode/stop:
+    post:
+      tags:
+        - gcode
+      summary: Stop printing
+      description: |-
+        Stop printing the current gcode file. Afterwards you won't be able to continue printing, this
+        will stop printing for good.
+      responses:
+        '200':
+          description: Successfully stopped printing
+        # TODO more errors?
+  /gcode/start:
+    post:
+      tags:
+        - gcode
+      summary: Start printing
+      description: |-
+        Will start printing the given gcode file if the printer is currently stopped.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                path:
+                  type: string
+                  description: Path to the gcode file to print
+                  example: /run/media/usb/example.gcode
+      responses:
+        '200':
+          description: Successfully started printing
+        '404':
+          description: Couldn't find gcode file
+        '405':
+          description: Invalid input
+        '409':
+          description: Printer isn't stopped
+        # TODO more errors?
+  /gcode/continue:
+    post:
+      tags:
+        - gcode
+      summary: Continue printing
+      description: Continue printing the currently paused gcode file
+      responses:
+        '200':
+          description: Successfully continued printing
+        '409':
+          description: Printer isn't paused
+  /gcode/pause:
+    post:
+      tags:
+        - gcode
+      summary: Pause printing
+      description: Pause printing the current gcode file
+      responses:
+        '200':
+          description: Successfully paused printing
+        '409':
+          description: Printer was stopped
+        # TODO more errors?
+  /axis/position:
+    get:
+      tags:
+        - axis
+      summary: Get position of all axis
+      description: Get position information for all axis in one request
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  x:
+                    $ref: '#/components/schemas/AxisPosition'
+                  y:
+                    $ref: '#/components/schemas/AxisPosition'
+                  z:
+                    $ref: '#/components/schemas/AxisPosition'
+                  e:
+                    $ref: '#/components/schemas/AxisPosition'
+  /axis/{axisName}/position:
+    get:
+      tags:
+        - axis
+      summary: Get the position of an axis
+      description: Get the position of the given axis
+      parameters:
+        - $ref: '#/components/parameters/AxisName'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AxisPosition'
+  /axis/{axisName}/settings:
+    get:
+      tags:
+        - axis
+      summary: Get the settings of an axis
+      description: Get the settings of the given axis
+      parameters:
+        - $ref: '#/components/parameters/AxisName'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AxisSettings'
+    put:
+      tags:
+        - axis
+      summary: Update the settings of an axis
+      parameters:
+        - $ref: '#/components/parameters/AxisName'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AxisSettings'
+      responses:
+        '200':
+          description: Successfully updated settings
+          # TODO content
+        '405':
+          description: Invalid input
+  /axis/{axisName}/reference:
+    post:
+      tags:
+        - axis
+      summary: Reference an axis
+      description: |-
+        Do a reference run on the given axis to (re-)reference the position of that axis.
+        This only works when the printer is currently stopped and is not already doing a reference run on that axis.
+      parameters:
+        - $ref: '#/components/parameters/AxisName'
+      responses:
+        '200':
+          description: Successfully started referencering the axis
+        '409':
+          description: Printer wasn't stopped or this axis is already doing a reference run
+          # TODO either split or add content
+  /heating/{heatingElement}/settings:
+    get:
+      tags:
+        - heating
+      summary: Get the settings of a heating element
+      parameters:
+        - $ref: '#/components/parameters/HeatingElement'
+      responses:
+        '200':
+          description: Success
+          content:
+            applicaction/json:
+              schema:
+                $ref: '#/components/schemas/HeatingSettings'
+    put:
+      tags:
+        - heating
+      summary: Update the settings of a heating element
+      parameters:
+        - $ref: '#/components/parameters/HeatingElement'
+      requestBody:
+        content:
+            applicaction/json:
+              schema:
+                $ref: '#/components/schemas/HeatingSettings'
+      responses:
+        '200':
+          description: Successfully updated settings
+        '405':
+          description: Invalid input
+  /estop:
+    post:
+      tags:
+        - estop
+      summary: stop the printer in a not-so-emergency
+      description: |-
+        Stop the printer in an emergency that is not that important.
+        This is not as violent as cutting the power or similar, but should also be viewed as less reliable and less fast. Don't use this in an actual case of danger to life and/or limb.
+        
+        After stopping the printer using this endpoint, the internal state of the printer will be invalid, meaning the software needs to be restarted and the motors re-referenced.
+      responses:
+        '200':
+          description: Success
+components:
+  schemas:
+    GCode:
+      oneOf:
+        - $ref: '#/components/schemas/GCodePrinting'
+        - $ref: '#/components/schemas/GCodeStopped'
+        - $ref: '#/components/schemas/GCodePaused'
+      discriminator:
+        propertyName: status
+        mapping:
+          printing: '#/components/schemas/GCodePrinting'
+          stopped: '#/components/schemas/GCodeStopped'
+          paused: '#/components/schemas/GCodePaused'
+    GCodeCommonPrintingPaused:
+      type: object
+      properties:
+        path:
+          type: string
+          example: '/run/media/usb/example.gcode'
+        line:
+          type: integer
+          example: 42
+    GCodeStopped:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          example: stopped
+    GCodePrinting:
+      allOf:
+        - type: object
+          required:
+            - status
+          properties:
+            status:
+              type: string
+              example: printing
+        - $ref: '#/components/schemas/GCodeCommonPrintingPaused'
+    GCodePaused:
+      allOf:
+        - type: object
+          required:
+            - status
+          properties:
+            status:
+              type: string
+              example: paused
+        - $ref: '#/components/schemas/GCodeCommonPrintingPaused'
+    AxisPosition:
+      type: object
+      properties:
+        position:
+          type: integer
+          description: Absolute position in millimeters
+          example: 123
+        # TODO add seperate schema for temp and then combine
+        # them for another endpoint
+    AxisSettings:
+      type: object
+      properties:
+        max_rapid_acceleration:
+          type: integer
+        max_normal_acceleration:
+          type: integer
+        max_rapid_deceleration:
+          type: integer
+        max_normal_deceleration:
+          type: integer
+        max_rapid_accel_jolt:
+          type: integer
+        max_normal_accel_jolt:
+          type: integer
+        max_rapid_decel_jolt:
+          type: integer
+        max_normal_decel_jolt:
+          type: integer
+        # TODO more
+    HeatingSettings:
+      type: object
+      properties:
+        max_temp:
+          type: integer
+        # TODO more
+  parameters:
+    HeatingElement:
+      name: heatingElement
+      in: path
+      description: Name of the heating element
+      required: true
+      schema:
+        type: string
+        enum:
+          - hotend
+          - bed
+          - chamber
+    AxisName:
+      name: axisName
+      in: path
+      description: Name of the axis
+      required: true
+      schema:
+        type: string
+        enum:
+          - x
+          - y
+          - z
+          - e
