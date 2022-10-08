@@ -18,6 +18,8 @@ tags:
     description: Control the different heating elements
   - name: estop
     description: Stop the motor in a not-so-emergency
+  - name: errors
+    description: Everything concerning errors
 paths:
   /gcode:
     get:
@@ -37,7 +39,7 @@ paths:
       tags:
         - gcode
       summary: Stop printing
-      description: |-
+      description: |
         Stop printing the current gcode file. Afterwards you won't be able to continue printing, this
         will stop printing for good.
       responses:
@@ -49,7 +51,7 @@ paths:
       tags:
         - gcode
       summary: Start printing
-      description: |-
+      description: |
         Will start printing the given gcode file if the printer is currently stopped.
       requestBody:
         content:
@@ -196,7 +198,7 @@ paths:
       tags:
         - axis
       summary: Reference an axis
-      description: |-
+      description: |
         Do a reference run on the given axis to (re-)reference the position of that axis.
         This only works when the printer is currently stopped and is not already doing a reference run on that axis.
       parameters:
@@ -246,7 +248,7 @@ paths:
       tags:
         - estop
       summary: stop the printer in a not-so-emergency
-      description: |-
+      description: |
         Stop the printer in an emergency that is not that important.
         This is not as violent as cutting the power or similar, but should also be viewed as less reliable and less fast. Don't use this in an actual case of danger to life and/or limb.
         
@@ -254,6 +256,70 @@ paths:
       responses:
         '200':
           description: Success
+  /errors:
+    get:
+      tags:
+        - errors
+      summary: displays past errors
+      parameters:
+        - name: page
+          in: query
+          description: Number of the requested page
+          required: false
+          schema:
+            type: integer
+            default: 0
+            example: 0
+      responses:
+        '200':
+          description: Success
+          content:
+            applicaction/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: integer
+                    description: number of the page
+                    example: 0
+                  errors:
+                    type: array
+                    description: list of errors, with the latest at the top
+                    maxLength: 10
+                    items:
+                      $ref: '#/components/schemas/Error'
+  /errors/last:
+    get:
+      tags:
+        - errors
+      summary: displays last error
+      responses:
+        '200':
+          description: Success
+          content:
+            applicaction/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /errors/{id}:
+    get:
+      tags:
+        - errors
+      summary: displays the error with the given id
+      parameters:
+        - name: id
+          in: path
+          description: id of the desired error
+          required: true
+          schema:
+            type: integer
+            example: 1337
+      responses:
+        '200':
+          description: Success
+          content:
+            applicaction/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 components:
   schemas:
     GCode:
@@ -327,6 +393,25 @@ components:
       type: object
       properties:
         # TODO more
+    Error:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: unique id of the error
+          example: 1337
+        time:
+          type: integer
+          description: time that the error occured at
+          example: 1665256697
+        text:
+          type: string
+          description: description of the error
+          example: |
+            Error: failed to open settings-file
+
+            Caused by:
+                Permission denied (os error 13)"
   parameters:
     HeatingElement:
       name: heatingElement
