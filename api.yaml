@@ -41,7 +41,7 @@ paths:
         Stop printing the current gcode file. Afterwards you won't be able to continue printing, this
         will stop printing for good.
       responses:
-        '200':
+        '202':
           description: Successfully stopped printing
         # TODO more errors?
   /gcode/start:
@@ -62,7 +62,7 @@ paths:
                   description: Path to the gcode file to print
                   example: /run/media/usb/example.gcode
       responses:
-        '200':
+        '202':
           description: Successfully started printing
         '404':
           description: Couldn't find gcode file
@@ -78,7 +78,7 @@ paths:
       summary: Continue printing
       description: Continue printing the currently paused gcode file
       responses:
-        '200':
+        '202':
           description: Successfully continued printing
         '409':
           description: Printer isn't paused
@@ -89,7 +89,7 @@ paths:
       summary: Pause printing
       description: Pause printing the current gcode file
       responses:
-        '200':
+        '202':
           description: Successfully paused printing
         '409':
           description: Printer was stopped
@@ -202,7 +202,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/AxisName'
       responses:
-        '200':
+        '202':
           description: Successfully started referencering the axis
         '409':
           description: Printer wasn't stopped or this axis is already doing a reference run
