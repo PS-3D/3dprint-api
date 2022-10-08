@@ -316,28 +316,16 @@ components:
     AxisSettings:
       type: object
       properties:
-        max_rapid_acceleration:
+        reference_speed:
           type: integer
-        max_normal_acceleration:
+        reference_accel_decel:
           type: integer
-        max_rapid_deceleration:
-          type: integer
-        max_normal_deceleration:
-          type: integer
-        max_rapid_accel_jolt:
-          type: integer
-        max_normal_accel_jolt:
-          type: integer
-        max_rapid_decel_jolt:
-          type: integer
-        max_normal_decel_jolt:
+        reference_jerk:
           type: integer
         # TODO more
     HeatingSettings:
       type: object
       properties:
-        max_temp:
-          type: integer
         # TODO more
   parameters:
     HeatingElement:
