@@ -163,6 +163,34 @@ paths:
           # TODO content
         '405':
           description: Invalid input
+  /axis/e/settings:
+    get:
+      tags:
+        - axis
+      summary: Get the settings of the extruder
+      description: Get the settings of the extruder
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AxisSettings'
+    put:
+      tags:
+        - axis
+      summary: Update the settings of the extruder
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AxisSettings'
+      responses:
+        '200':
+          description: Successfully updated settings
+          # TODO content
+        '405':
+          description: Invalid input
   /axis/{axisName}/reference:
     post:
       tags:
@@ -330,4 +358,3 @@ components:
           - x
           - y
           - z
-          - e
