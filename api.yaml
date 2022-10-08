@@ -18,7 +18,7 @@ tags:
     description: Control the different heating elements
   - name: estop
     description: Stop the motor in a not-so-emergency
-  - name: errors
+  - name: error
     description: Everything concerning errors
 paths:
   /gcode:
@@ -259,7 +259,7 @@ paths:
   /errors:
     get:
       tags:
-        - errors
+        - error
       summary: displays past errors
       parameters:
         - name: page
@@ -288,10 +288,10 @@ paths:
                     maxLength: 10
                     items:
                       $ref: '#/components/schemas/Error'
-  /errors/last:
+  /error/last:
     get:
       tags:
-        - errors
+        - error
       summary: displays last error
       responses:
         '200':
@@ -300,10 +300,10 @@ paths:
             applicaction/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /errors/{id}:
+  /error/{id}:
     get:
       tags:
-        - errors
+        - error
       summary: displays the error with the given id
       parameters:
         - name: id
