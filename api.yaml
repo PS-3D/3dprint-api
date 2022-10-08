@@ -221,6 +221,8 @@ paths:
             applicaction/json:
               schema:
                 $ref: '#/components/schemas/HeatingSettings'
+        '501':
+          description: This printer doesn't have the corresponding heating element
     put:
       tags:
         - heating
@@ -237,6 +239,8 @@ paths:
           description: Successfully updated settings
         '405':
           description: Invalid input
+        '501':
+          description: This printer doesn't have the corresponding heating element
   /estop:
     post:
       tags:
