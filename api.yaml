@@ -300,6 +300,8 @@ paths:
             applicaction/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        '204':
+          description: No error occured yet
   /error/{id}:
     get:
       tags:
@@ -320,6 +322,8 @@ paths:
             applicaction/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        '404':
+          description: Error with given id doesn't exist
 components:
   schemas:
     GCode:
