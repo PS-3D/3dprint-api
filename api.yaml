@@ -165,6 +165,12 @@ paths:
           # TODO content
         '405':
           description: Invalid input
+        '500':
+          description: Error while saving settings
+          content:
+            applicaction/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /axis/e/settings:
     get:
       tags:
@@ -193,6 +199,12 @@ paths:
           # TODO content
         '405':
           description: Invalid input
+        '500':
+          description: Error while saving settings
+          content:
+            applicaction/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /axis/{axisName}/reference:
     post:
       tags:
@@ -241,6 +253,12 @@ paths:
           description: Successfully updated settings
         '405':
           description: Invalid input
+        '500':
+          description: Error while saving settings
+          content:
+            applicaction/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '501':
           description: This printer doesn't have the corresponding heating element
   /estop:
