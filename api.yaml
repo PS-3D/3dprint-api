@@ -411,7 +411,7 @@ components:
             Error: failed to open settings-file
 
             Caused by:
-                Permission denied (os error 13)"
+                Permission denied (os error 13)
   parameters:
     HeatingElement:
       name: heatingElement
