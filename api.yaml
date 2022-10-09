@@ -116,8 +116,6 @@ paths:
                     $ref: '#/components/schemas/AxisPosition'
                   z:
                     $ref: '#/components/schemas/AxisPosition'
-                  e:
-                    $ref: '#/components/schemas/AxisPosition'
   /axis/{axisName}/position:
     get:
       tags:
