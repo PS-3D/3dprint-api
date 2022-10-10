@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: 3dprinter API
+  title: ps3dprint-api
   description: |-
     3D Printer stuff
   contact:
