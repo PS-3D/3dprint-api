@@ -66,13 +66,22 @@ paths:
       responses:
         '202':
           description: Successfully started printing
-        '404':
-          description: Couldn't find gcode file
         '405':
           description: Invalid input
         '409':
           description: Printer isn't stopped
-        # TODO more errors?
+        '500':
+          description: Other error
+          content:
+            applicaction/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '512':
+          description: Couldn't open gcode file
+          content:
+            applicaction/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /gcode/continue:
     post:
       tags:
@@ -163,7 +172,7 @@ paths:
           # TODO content
         '405':
           description: Invalid input
-        '500':
+        '512':
           description: Error while saving settings
           content:
             applicaction/json:
@@ -197,7 +206,7 @@ paths:
           # TODO content
         '405':
           description: Invalid input
-        '500':
+        '512':
           description: Error while saving settings
           content:
             applicaction/json:
@@ -251,14 +260,14 @@ paths:
           description: Successfully updated settings
         '405':
           description: Invalid input
-        '500':
+        '501':
+          description: This printer doesn't have the corresponding heating element
+        '512':
           description: Error while saving settings
           content:
             applicaction/json:
               schema:
                 $ref: '#/components/schemas/Error'
-        '501':
-          description: This printer doesn't have the corresponding heating element
   /estop:
     post:
       tags:
