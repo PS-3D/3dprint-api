@@ -98,7 +98,7 @@ paths:
         '202':
           description: Successfully continued printing
         '409':
-          description: Printer isn't paused
+          description: Printer is stopped
   /gcode/pause:
     post:
       tags:
@@ -109,7 +109,7 @@ paths:
         '202':
           description: Successfully paused printing
         '409':
-          description: Printer was stopped
+          description: Printer is stopped
         # TODO more errors?
   /axis/position:
     get:
