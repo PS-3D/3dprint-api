@@ -82,6 +82,12 @@ paths:
             applicaction/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        '513':
+          description: Error parsing gcode file
+          content:
+            applicaction/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /gcode/continue:
     post:
       tags:
