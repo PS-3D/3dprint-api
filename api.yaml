@@ -218,22 +218,57 @@ paths:
             applicaction/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /axis/{axisName}/reference:
+  /axis/{xory}/reference:
     post:
       tags:
         - axis
-      summary: Reference an axis
+      summary: Reference X or Y axis
       description: |
         Do a reference run on the given axis to (re-)reference the position of that axis.
-        This only works when the printer is currently stopped and is not already doing a reference run on that axis.
+        This only works when the printer is currently stopped.
       parameters:
-        - $ref: '#/components/parameters/AxisName'
+        - name: xory
+          in: path
+          description: Name of the axis
+          required: true
+          schema:
+            type: string
+            enum:
+              - x
+              - y
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReferenceCommon'
       responses:
         '202':
           description: Successfully started referencering the axis
         '409':
-          description: Printer wasn't stopped or this axis is already doing a reference run
-          # TODO either split or add content
+          description: Printer wasn't stopped
+  /axis/z/reference:
+    post:
+      tags:
+        - axis
+      summary: Reference Z axis
+      description: |
+        There are two directions the Z-axis can be referenced:
+        1. Endstop:
+           Much like reference runs for X and Y this will drive the motor to the endstop. Contrary to X and Y this isn't enough to use the Z-axis, since knowing where the endstop is doesn't mean the printer knows where the bed is. For that a reference run in the direction of the hotend needs to be executed.
+        2. Hotend:
+           This only works if the printer already knows where the endstop is, meaning a reference run in the direction of the endstop has to be done first
+           It involves driving the axis to where the nozzle of the hotend touches the bed and then calling this endpoint. That will set the zeropoint on the Z-axis to where the Z-axis is.
+           The position of the endstop won't be forgotten though, meaning that the printer will not drive over the endstop.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ZReference'
+      responses:
+        '202':
+          description: Successfully started referencering the axis
+        '409':
+          description: Printer wasn't stopped
   /heating/{heatingElement}/settings:
     get:
       tags:
@@ -424,6 +459,42 @@ components:
         reference_jerk:
           type: integer
         # TODO more
+    ZReference:
+      oneOf:
+        - $ref: '#/components/schemas/ZReferenceEndstop'
+        - $ref: '#/components/schemas/ZReferenceHotend'
+      discriminator:
+        propertyName: direction
+        mapping:
+          endstop: '#/components/schemas/ZReferenceEndstop'
+          hotend: '#/components/schemas/ZReferenceHotend'
+    ZReferenceEndstop:
+      allOf:
+        - type: object
+          required:
+            - direction
+          properties:
+            direction:
+              type: string
+              example: "endstop"
+        - $ref: '#/components/schemas/ReferenceCommon'
+    ZReferenceHotend:
+      type: object
+      required:
+        - direction
+      properties:
+        direction:
+          type: string
+          example: "hotend"
+    ReferenceCommon:
+      type: object
+      properties:
+        speed:
+          type: integer
+        accel_decel:
+          type: integer
+        jerk:
+          type: integer
     HeatingSettings:
       type: object
       properties:
