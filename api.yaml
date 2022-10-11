@@ -285,7 +285,7 @@ paths:
         
         After stopping the printer using this endpoint, the internal state of the printer will be invalid, meaning the software needs to be restarted and the motors re-referenced.
       responses:
-        '200':
+        '202':
           description: Success
   /errors:
     get:
