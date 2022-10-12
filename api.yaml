@@ -244,6 +244,8 @@ paths:
       responses:
         '202':
           description: Successfully started referencering the axis
+        '405':
+          description: Invalid input
         '409':
           description: Printer wasn't stopped
   /axis/z/reference:
@@ -267,6 +269,8 @@ paths:
       responses:
         '202':
           description: Successfully started referencering the axis
+        '405':
+          description: Invalid input
         '409':
           description: Printer wasn't stopped
   /heating/{heatingElement}/settings:
