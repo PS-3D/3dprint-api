@@ -202,7 +202,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AxisSettings'
+                $ref: '#/components/schemas/ExtruderSettings'
     put:
       tags:
         - axis
@@ -493,6 +493,8 @@ components:
         reference_jerk:
           type: integer
         # TODO more
+    ExtruderSettings:
+      type: object
     ZReference:
       oneOf:
         - $ref: '#/components/schemas/ZReferenceEndstop'
