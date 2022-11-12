@@ -478,9 +478,9 @@ components:
       type: object
       properties:
         position:
-          type: integer
+          type: number
           description: Absolute position in millimeters
-          example: 123
+          example: 123.5
         # TODO add seperate schema for temp and then combine
         # them for another endpoint
     AxisSettings:
