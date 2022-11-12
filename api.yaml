@@ -177,7 +177,13 @@ paths:
           description: Successfully updated settings
           # TODO content
         '405':
-          description: Invalid input
+          description: Invalid input format
+        '452':
+          description: Value(s) out of bounds
+          content:
+            applicaction/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '512':
           description: Error while saving settings
           content:
@@ -211,7 +217,13 @@ paths:
           description: Successfully updated settings
           # TODO content
         '405':
-          description: Invalid input
+          description: Invalid input format
+        '452':
+          description: Values out of bounds
+          content:
+            applicaction/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '512':
           description: Error while saving settings
           content:
@@ -245,9 +257,15 @@ paths:
         '202':
           description: Successfully started referencering the axis
         '405':
-          description: Invalid input
+          description: Invalid input format
         '409':
           description: Printer wasn't stopped
+        '452':
+          description: Values out of bounds
+          content:
+            applicaction/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /axis/z/reference:
     post:
       tags:
@@ -273,6 +291,12 @@ paths:
           description: Invalid input
         '409':
           description: Printer wasn't stopped
+        '452':
+          description: Values out of bounds
+          content:
+            applicaction/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /heating/{heatingElement}/settings:
     get:
       tags:
@@ -304,7 +328,13 @@ paths:
         '200':
           description: Successfully updated settings
         '405':
-          description: Invalid input
+          description: Invalid input format
+        '452':
+          description: Values out of bounds
+          content:
+            applicaction/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '501':
           description: This printer doesn't have the corresponding heating element
         '512':
