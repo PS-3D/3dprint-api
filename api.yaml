@@ -67,7 +67,7 @@ paths:
         '202':
           description: Successfully started printing
         '405':
-          description: Invalid input
+          description: Invalid input, i.e. couldn't parse the json
         '409':
           description: Printer isn't stopped
         '500':
@@ -177,7 +177,7 @@ paths:
           description: Successfully updated settings
           # TODO content
         '405':
-          description: Invalid input format
+          description: Invalid input, i.e. couldn't parse the json
         '452':
           description: Value(s) out of bounds
           content:
@@ -217,7 +217,7 @@ paths:
           description: Successfully updated settings
           # TODO content
         '405':
-          description: Invalid input format
+          description: Invalid input, i.e. couldn't parse the json
         '452':
           description: Values out of bounds
           content:
@@ -257,7 +257,7 @@ paths:
         '202':
           description: Successfully started referencering the axis
         '405':
-          description: Invalid input format
+          description: Invalid input, i.e. couldn't parse the json
         '409':
           description: Printer wasn't stopped
         '452':
@@ -288,7 +288,7 @@ paths:
         '202':
           description: Successfully started referencering the axis
         '405':
-          description: Invalid input
+          description: Invalid input, i.e. couldn't parse the json
         '409':
           description: Printer wasn't stopped
         '452':
